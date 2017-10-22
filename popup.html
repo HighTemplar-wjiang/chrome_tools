@@ -1,0 +1,65 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+
+<head>
+    <title>Wweiwei's Chrome Tools</title>
+    <style type="text/css">
+        body {
+            margin: 10px;
+            white-space: nowrap;
+        }
+
+        h1 {
+            font-size: 15px;
+        }
+
+        div.frame {
+            height: 300px;
+            width: 200px;
+        }
+
+        div.container {
+            height: 60px;
+            width: 90px;
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+        }
+        div.data {
+            visibility: hidden;
+        }
+
+        button {
+            background-color: #6091e0;
+            color: white;
+            font-size: 14px;
+            border: None;
+            height: 60px;
+            width: 90px;
+        }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+    <script src="popup.js"></script>
+</head>
+
+<body>
+    <div class="data" id="dataInject"></div>
+    <div class="frame">
+        <div class="container">
+            <button type="button" id="batchDownload">Batch<br> Download</button>
+        </div>
+    </div>
+</body>
+
+</html>
