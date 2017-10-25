@@ -48,6 +48,15 @@ function getCurrentTabUrl(callback) {
     // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
+function filterLinks() {
+    var script = 'var urls = [];\
+    for (var i = document.links.length; i-->0;)\
+        urls.push(document.links[i].href);\
+    console.log(urls);\
+    urls';
+    
+}
+
 function getAndDownloadLinks() {
     var script = 'var urls = [];\
     for (var i = document.links.length; i-->0;)\

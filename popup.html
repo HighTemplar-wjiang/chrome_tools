@@ -24,23 +24,33 @@
         }
 
         div.container {
-            height: 60px;
-            width: 90px;
+            height: 40px;
             align-items: center;
             display: flex;
             justify-content: space-between;
         }
-        div.data {
-            visibility: hidden;
+
+        div.button {
+            height: 40px;
+            width: 200px;
         }
 
+        div.item-display {
+            width: 200px;
+        }
+        
         button {
             background-color: #6091e0;
             color: white;
             font-size: 14px;
             border: None;
-            height: 60px;
+            height: 30px;
             width: 90px;
+            float: right;
+        }
+
+        input {
+            width: 300px;
         }
     </style>
 
@@ -54,10 +64,15 @@
 </head>
 
 <body>
-    <div class="data" id="dataInject"></div>
     <div class="frame">
         <div class="container">
-            <button type="button" id="batchDownload">Batch<br> Download</button>
+            <input name="filter" /><br />
+        </div>
+        <div class="button">
+            <button type="button" id="batchDownload">Download</button> <br />
+        </div>
+        <div class="item-display">
+            &lt;Empty&gt;
         </div>
     </div>
 </body>
