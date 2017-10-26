@@ -48,50 +48,81 @@ function getCurrentTabUrl(callback) {
     // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
-function filterLinks() {
-    var script = 'var urls = [];\
-    for (var i = document.links.length; i-->0;)\
-        urls.push(document.links[i].href);\
-    console.log(urls);\
-    urls';
-    
+function saveFilter(url, expression) {
+    var items = {};
+    items[url] = expression;
+    chrome.storage.sync.set(items);
 }
 
-function getAndDownloadLinks() {
+function getSavedFilter(url, callback) {
+    // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
+    // for chrome.runtime.lastError to ensure correctness even when the API call
+    // fails.
+    chrome.storage.sync.get(url, (items) => {
+        callback(chrome.runtime.lastError ? null : items[url]);
+    });
+}
+
+function filterLinks(url, expression) {
     var script = 'var urls = [];\
     for (var i = document.links.length; i-->0;)\
         urls.push(document.links[i].href);\
-    console.log(urls);\
+    console.log("' + expression.toString() + '");\
     urls';
 
     chrome.tabs.executeScript({
         code: script
-    }, function(result) {
+    }, function (result) {
+        var filteredLinks = [];
+        var re = new RegExp(expression);
         links = result[0];
-        for (var i = links.length; i-->0; ) {
+
+        for (var i = links.length; i-- > 0;) {
             link = links[i];
-            if (/.jar/.test(link)) {
-                console.log("Downloading " + link);
-                chrome.downloads.download({
-                    url: link,
-                    filename: "batch_download/" + link.match(/[^\\/]+$/)[0]
-                })
+            if (re.test(link) && (-1 == filteredLinks.indexOf(link))) {
+                filteredLinks = filteredLinks.concat(link);
             }
         }
-    });
 
-    //urls = document.getElementById('dataInject').innerHTML
-    //alert('x');
-    /*chrome.downloads.download({
-        url: "http://download.dl2sba.com/vnaj/TestLibrary/vnaJ.Library.3.2.0_1.jar",
-        filename:"batch_download/vnaJ.Library.3.2.0_1.jar"
-    })*/
+        document.getElementById("count").innerHTML = "<p> Matched " + filteredLinks.length.toString() + " items.</p>";
+        document.getElementById("result").innerHTML = filteredLinks.toString().split(',').join('<br />');
+    });
+}
+
+function getAndDownloadLinks() {
+
+    filteredLinks = document.getElementById("result").innerHTML.split('<br>')
+
+    for (var i = filteredLinks.length; i-- > 0;) {
+        link = filteredLinks[i];
+
+        console.log("Downloading " + link);
+        chrome.downloads.download({
+            url: link,
+            filename: "batch_download/" + link.match(/[^\\/]+$/)[0]
+        })
+
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     getCurrentTabUrl((url) => {
 
-        document.getElementById('batchDownload').addEventListener('click', getAndDownloadLinks);
+        // Restore filter if existed
+        getSavedFilter(url, (savedFilter) => {
+            if (savedFilter) {
+                filterLinks(url, savedFilter);
+                document.getElementById('filter').value = savedFilter;
+            }
+        });
+
+        document.getElementById('batchDownload').addEventListener('click', () => {
+            getAndDownloadLinks();
+        });
+        document.getElementById('filter').addEventListener('change', () => {
+            filterLinks(url, document.getElementById('filter').value);
+            saveFilter(url, document.getElementById('filter').value);
+        })
 
     });
 });

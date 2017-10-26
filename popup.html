@@ -11,7 +11,6 @@
     <style type="text/css">
         body {
             margin: 10px;
-            white-space: nowrap;
         }
 
         h1 {
@@ -20,23 +19,22 @@
 
         div.frame {
             height: 300px;
-            width: 200px;
+            width: 500px;
         }
 
         div.container {
             height: 40px;
             align-items: center;
-            display: flex;
-            justify-content: space-between;
         }
 
         div.button {
             height: 40px;
-            width: 200px;
+            width: 500px;
         }
 
         div.item-display {
-            width: 200px;
+            width: 500px;
+            word-break: break-word;
         }
         
         button {
@@ -50,7 +48,7 @@
         }
 
         input {
-            width: 300px;
+            width: 500px;
         }
     </style>
 
@@ -66,13 +64,16 @@
 <body>
     <div class="frame">
         <div class="container">
-            <input name="filter" /><br />
+            <input type="text" id="filter" /><br />
         </div>
         <div class="button">
             <button type="button" id="batchDownload">Download</button> <br />
         </div>
-        <div class="item-display">
-            &lt;Empty&gt;
+        <div class="item-display", id="count">
+            Matched 0 item(s).
+        </div>
+        <div class="item-display", id="result">
+            <p>&lt;Empty&gt;</p>
         </div>
     </div>
 </body>
